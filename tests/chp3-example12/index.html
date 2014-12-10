@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>New Maps Chapter 3 Example 11 &ndash; Choropleth Map</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.1/normalize.min.css" />
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+<style>
+    body { margin:0; padding:0; font-family: "Open Sans"; }
+    h1 { position: absolute; z-index: 200; padding: 4px 8px; color: #222; background: whitesmoke; left: 80px; border-radius: 3px;}
+    #map { position:absolute; top:0; bottom:0; width:100%; }
+    #legend { position: absolute; bottom: 30px; right: 10px; padding: 8px 12px; background: whitesmoke; border-radius: 3px; }
+    .legendSquare { float: left; width: 20px; height: 20px; display: inline-block; margin-right: 5px ; }
+    #ui-controls { position: absolute; top: 15px; right: 10px; padding: 8px 12px; background: whitesmoke; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div id='map'></div>
+
+<div id='ui-controls'>
+	<select name="source">
+	  <option value="sumMw" selected>All</option> 
+	  <option value="BIT_avgMW">Bituminous Coal</option>
+	    <option value="SUB_avgMW">Subuminous Coal</option>
+	  <option value="NG_avgMW">Natural Gas</option>
+	  <option value="NUC_avgMW">Nuclear</option>
+	  <option value="WAT_avgMW">Hydro</option>
+	  <option value="WND_avgMW">Wind</option>
+	</select>
+
+	<select name="class-method">
+	  <option value="equalInterval" selected>Equal Interval</option> 
+	  <option value="quantile">Quantile</option>
+	  <option value="jenks">Jenks</option>
+	</select>
+</div>
+<div id='legend'></div>
+
+
+<script src="ss.js"></script>
+<script>
+
+
+(function() {
+
+	// create a map in the "map" div, set the view to display the continental US
+	var map = L.map('map').setView([40,-95], 5);
+
+	// object to store our AJAX loaded data
+	var data = {};
+
+	$.when(
+		$.getJSON("data/counties.json", function(counties) {
+
+			data.counties =  counties;
+
+		}),
+		$.getJSON("data/states.json", function(states) {
+
+			data.states =  states;
+
+		})
+
+	).then(function() {
+
+		// mug it
+		drawMap(data.states, data.counties)
+
+	});
+
+	// available attributes are sumMw, NG_avgMW, BIT_avgMW, SUB_avgMW, NUC_avgMW, WAT_avgMW, WND_avgMW, RFO_avgMW, DFO_avgMW, LIG_avgMW
+	var currentAttribute = 'sumMw'
+
+	// available methods are equalInterval, jenks, and quantile
+	var	classificationMethod = 'equalInterval'; 
+
+	function drawMap(statesData, countiesData) {
+
+		var counties = L.geoJson(countiesData, {
+
+			style: {
+				color: "#b1b8b8",
+				weight: 1,
+				fillColor: null,
+				fillOpacity: 1
+			}
+
+		}).addTo(map);
+
+		// state borders to make it look nice (and to locate counties within states)
+		var states = L.geoJson(statesData, {
+			style: {
+				color: "#e4e3db",
+				fillColor: "white",
+				weight: 3,
+				fillOpacity: 0
+			}
+		}).addTo(map)
+
+		updateMap(counties,countiesData);
+
+		$('select').change(function() {
+
+			var target = $(this);
+			
+			if(target.attr('name') == 'source') {
+				currentAttribute = target.val();
+			}
+			if(target.attr('name') == 'class-method') {
+				classificationMethod = target.val();
+			}
+			
+			updateMap(counties, countiesData);
+
+		});
+
+	}
+
+	function updateMap(counties,countiesData) {
+
+		var currentData = [];
+
+		// loop through the entire dataset
+		for(var i in countiesData.features) {
+
+			//standardize current attribute by 1000 squ kilometers
+			var val = countiesData.features[i].properties[currentAttribute]/(countiesData.features[i].properties['ALAND']/1000000);
+
+			if(val != null && val != 0) { // let's only map counties that are producing power
+				currentData.push(val);
+			}
+
+		}
+
+		// get classbreaks for the dataset of currently selected Attribute
+		var classBreaks = getClassBreaks(currentData,classificationMethod);
+		
+
+		// some color scheme for 5 # of classes
+		var orRd5 = ["#fef0d9","#fdcc8a","#fc8d59","#e34a33","#b30000"];
+
+		counties.eachLayer(function(layer) { // for each layer
+
+			var props = layer.feature.properties;
+		
+			var total = props[currentAttribute],
+					area = props.ALAND/1000000, // standardize the current attribute
+					value = total/area;
+				
+			layer.setStyle({
+
+				fillColor: classify(value,classBreaks,orRd5) // and colorize that layer based on the current classification
+
+			});
+
+		});
+
+		var legend = $("#legend").html(classificationMethod+"<br>"); // update legend
+
+		for(var j=1;j<=classBreaks.length-1;j++) {
+
+			var square = "<div class='legendSquare' style='background:"+orRd5[j-1]+"'></div>"
+
+			legend.append(square + Math.round(classBreaks[j]*10000)/10000+"<br>");
+		}
+
+	}
+
+	function getClassBreaks(dataSet,method) {
+
+		// determine break values based on selected classfication method
+		if(method == 'jenks') {
+
+			var breaks = ss.jenks(dataSet,5);
+
+		}
+		if(method == 'quantile') {
+
+			var breaks = ss.quantile(dataSet,[0,1/5,2/5,3/5,4/5,1]);
+
+		}
+		if(method == "equalInterval") {
+
+			var min = ss.min(dataSet),
+				max = ss.max(dataSet),
+				classDif = (max - min)/5,
+				breaks = [];
+
+			for (var i = 0; i <= 5; i++) {
+				console.log(min,i,min*i);
+				breaks[i] = min*i + classDif;
+			}
+
+			console.log(breaks);
+		}
+
+		return breaks;
+
+	}
+
+	function classify(value,breaks,colors) {
+
+		for(var i=1;i<breaks.length;i++) {
+
+			if(value <= breaks[i]) {
+
+				return colors[i-1];
+
+			}
+
+		}
+
+	}
+
+
+
+})();
+
+</script>
+</body>
+</html>
