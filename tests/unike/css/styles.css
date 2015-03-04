@@ -1,0 +1,90 @@
+ body { margin:0; 
+  	padding:0; 
+  	font-family: 'Open Sans'
+  }
+  header {
+  	position: absolute;
+  	z-index: 100;
+  	top: 0;
+  	width: 100%;
+  	background: #2d2829;
+  	height: 40px;
+  	border-bottom: 2px solid #e2b22c;
+  }
+  header h1 {
+  	font-weight: normal;
+  	font-size: 1.4em;
+  	position: absolute;
+  	left: 10px;
+  	top: -10px;
+  	color: ghostwhite;
+  	display: inline-block;
+  }
+  header #logo {
+  	font-weight: normal;
+  	font-size: 1em;
+  	margin-right: 100px;
+  	float: right;
+  	color: ghostwhite;
+  	margin-top: 10px;
+  }
+  header img {
+  	position: absolute;
+  	right: 10px;
+  	top: 5px;
+  }
+  #map { 
+  	position:absolute; 
+  	top:40px; 
+  	bottom:0; 
+    right: 0;
+  	width:85%; 
+  	//margin-left: 156px;
+  	z-index: 50;
+ }
+ #sidemenu {
+	background: #2d2829;
+	position: absolute;
+	z-index: 60;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	padding-top: 30px;
+	width: 15%;
+ }
+ #sidemenu h2 {
+ 	font-size: 1.2em;
+ 	margin-left: 15px;
+ 	font-variant: small-caps;
+ 	color: ghostwhite;
+ }
+ #sidemenu ul {
+ 	padding: 0 0 15px 0;
+ }
+ #sidemenu li {
+ 	list-style-type: none;
+ 	padding: 4px 5px;
+	margin: 0 10px;
+	line-height: 1.3em;
+ 	font-size: .9em;
+    color: #e2b22c;
+    border-radius: 3px;
+	-webkit-user-select: none; /* Chrome/Safari */        
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+ */
+ }
+ #sidemenu li:hover {
+ 	cursor: pointer;
+ 	opacity: 1;
+    color: #f6be23;
+ 	background: #484344;
+ }
+#sidemenu p {
+   padding: 4px 5px;
+   font-size: .9em;
+   color: ghostwhite;
+}
+#sidemenu p a {
+    color: #e2b22c;
+
+}
