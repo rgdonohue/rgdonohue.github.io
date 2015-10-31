@@ -1,1 +1,0 @@
-This simple example initially loads the page with an opaque div that covers the map and contains an animated loader gif image. Once the data file has been loaded with an AJAX request, the div is removed using JavaScript.
