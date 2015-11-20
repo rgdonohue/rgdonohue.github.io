@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+	
 	// check for modern browser support
 
 	var feature = {
@@ -121,8 +122,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 		// Mapping page
 
-		var width = 860,
-    		height = 450;
+		var width = 800,
+    		height = 540;
     	
     	var projection = d3.geo.albersUsa()
     		 .translate([width / 2, height / 2])
@@ -136,10 +137,10 @@ document.addEventListener("DOMContentLoaded", function() {
 			.attr("width", width)
 			.attr("height", height);
 
-		d3.json("data/states2.json", function(error, states) {
+		d3.json("data/us.json", function(error, us) {
 
 			
-			var states = topojson.feature(states, states.objects.states).features;		
+			var states = topojson.feature(us, us.objects.us).features;		
 			
 			svg.append("g")
       			.attr("class", "states")
