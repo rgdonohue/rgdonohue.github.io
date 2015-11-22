@@ -296,9 +296,9 @@ ul li {
 }
 
 .about-info {
-    width: 55%;
-    float: right;
-    margin-top: -20px;
+    /* width: 55%;
+    /*float: right;*/
+    margin-top: 20px;
 }
 /* ==========================================================================
    Helper classes
@@ -563,6 +563,11 @@ ul li {
    #teaching ul.evals li { 
         max-width: 50%;
    }
+   .about-info {
+        width: 85%;
+        /*float: right;*/
+        margin-top: 20px;
+    }
 }
 
 @media only screen and (min-width: 46em) {
@@ -614,6 +619,12 @@ ul li {
             stroke-dashoffset: 0;
         }
     } */
+
+    .about-info {
+        width: 55%;
+        /*float: right;*/
+        margin-top: 20px;
+    }
 
 
 
