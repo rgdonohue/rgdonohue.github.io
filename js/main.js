@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function() {
       			})
 
 		});
-		console.log(document.styleSheets[1].rules[20]);
+		//console.log(document.styleSheets[1].rules[20]);
 
 		// Courses code
 		$('#courses').addClass('sub-menu clearfix');
