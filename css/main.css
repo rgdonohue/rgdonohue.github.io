@@ -101,6 +101,7 @@ body {
 p {
     color: #414141;
     font-size: 1.2em;
+    max-width: 60%;
 }
 a {
     color: #4A87B4;
@@ -564,7 +565,7 @@ ul li {
         max-width: 50%;
    }
    .about-info {
-        width: 85%;
+/*        width: 85%;*/
         /*float: right;*/
         margin-top: 20px;
     }
@@ -621,7 +622,7 @@ ul li {
     } */
 
     .about-info {
-        width: 55%;
+/*        width: 55%;*/
         /*float: right;*/
         margin-top: 20px;
     }
