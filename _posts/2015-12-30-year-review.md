@@ -1,9 +1,8 @@
 ---
 title: 2015 Year in Review
-excerpt: "Post displaying the various ways of highlighting code in Markdown."
-modified: 2016-09-09T09:55:10-04:00
+excerpt: "Test post displaying mugs on the barbie."
 header:
-  teaser: "assets/images/markup-syntax-highlighting-teaser.jpg"
+  teaser: "assets/images/teaser-test.png"
 tags:
   - code
   - syntax highlighting
